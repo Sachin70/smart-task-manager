@@ -2,17 +2,8 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-
-interface Task {
-  id: number;
-  title: string;
-  dueDate: string;
-  priority: string;
-}
-
-interface TaskListProps {
-  tasks: Task[];
-}
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export const getPriorityColor = (priority: string) => {
   switch (priority) {
@@ -27,8 +18,9 @@ export const getPriorityColor = (priority: string) => {
   }
 };
 
-export const TaskList: React.FC<TaskListProps> = ({ tasks = [] }) => {
+export const TaskList: React.FC = () => {
   const router = useRouter();
+  const { filteredTasks } = useSelector((state: RootState) => state.tasks);
 
   const handleCardClick = (taskId: number) => {
     router.push(`/task/${taskId}`);
@@ -44,10 +36,10 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks = [] }) => {
 
   return (
     <div className="py-6 grid grid-cols-4 gap-x-5">
-      {tasks.length === 0 ? (
+      {filteredTasks.length === 0 ? (
         <p className="text-gray-500 text-center">No tasks found.</p>
       ) : (
-        tasks.map((task) => (
+        filteredTasks.map((task) => (
           <div
             key={task.id}
             className="bg-white p-5 mb-4 shadow-lg rounded-lg cursor-pointer hover:shadow-xl transition-shadow duration-300 ease-in-out"

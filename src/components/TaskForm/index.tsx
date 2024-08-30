@@ -14,37 +14,38 @@ import L from "leaflet";
 
 const DEFAULT_POSITION: [number, number] = [28.6139, 77.209];
 const ICON_URL = "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png";
-const ICON_SIZE: [number, number] = [25, 41]; // Correctly defined icon size
-const ICON_ANCHOR: [number, number] = [12, 41]; // Icon anchor position
+const ICON_SIZE: [number, number] = [25, 41];
+const ICON_ANCHOR: [number, number] = [12, 41];
 
 const LocationMap: React.FC<{
   position: [number, number];
   onPositionChange: (position: [number, number]) => void;
 }> = ({ position, onPositionChange }) => {
-  const map = useMap(); // Access the map instance
+  const map = useMap();
 
   useEffect(() => {
-    map.setView(position, 13); // Set the map center and zoom level
+    if (typeof window !== "undefined" && map) {
+      map.setView(position, 13);
+    }
   }, [position, map]);
 
   useMapEvents({
     click(e) {
-      const newPosition: [number, number] = [e.latlng.lat, e.latlng.lng];
-      onPositionChange(newPosition);
+      if (typeof window !== "undefined") {
+        const newPosition: [number, number] = [e.latlng.lat, e.latlng.lng];
+        onPositionChange(newPosition);
+      }
     },
   });
 
   return (
     <>
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <Marker
         position={position}
         icon={L.icon({
           iconUrl: ICON_URL,
-          iconSize: ICON_SIZE, // Correct type for iconSize
+          iconSize: ICON_SIZE,
           iconAnchor: ICON_ANCHOR,
         })}
       >
@@ -54,12 +55,12 @@ const LocationMap: React.FC<{
   );
 };
 
-export const TaskForm = () => {
+const TaskForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [priority, setPriority] = useState("Medium");
-  const [location, setLocation] = useState<[number, number]>(DEFAULT_POSITION); // Location state
+  const [location, setLocation] = useState<[number, number]>(DEFAULT_POSITION);
 
   const handleSave = () => {
     console.log({
@@ -107,7 +108,6 @@ export const TaskForm = () => {
           <option value="Low">Low</option>
         </select>
 
-        {/* Map for location selection */}
         <div className="h-[300px] rounded-md overflow-hidden">
           <MapContainer
             style={{ height: "100%", width: "100%" }}
@@ -132,3 +132,5 @@ export const TaskForm = () => {
     </div>
   );
 };
+
+export default TaskForm;

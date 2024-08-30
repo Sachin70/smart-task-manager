@@ -1,25 +1,27 @@
 "use client";
 
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React from "react";
+import { useRouter, usePathname, useParams } from "next/navigation";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
+import { useDispatch } from "react-redux";
+import { setSearchQuery } from "@/slices/taskSlices";
 
 interface HeaderProps {
   defaultTitle?: string;
-  onSearch: (query: string) => void; // Callback to handle search
 }
 
 export const Header: React.FC<HeaderProps> = ({
   defaultTitle = "Task Details",
-  onSearch,
 }) => {
   const pathname = usePathname();
   const router = useRouter();
   const params = useParams();
-  const [headerTitle, setHeaderTitle] = useState(defaultTitle);
-  const [searchQuery, setSearchQuery] = useState("");
+  const dispatch = useDispatch();
 
-  useEffect(() => {
+  const [headerTitle, setHeaderTitle] = React.useState(defaultTitle);
+  const [localSearchQuery, setLocalSearchQuery] = React.useState("");
+
+  React.useEffect(() => {
     const pathToTitle: Record<string, string> = {
       "/": "Task Manager",
       "/dashboard": "Dashboard",
@@ -38,8 +40,8 @@ export const Header: React.FC<HeaderProps> = ({
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
-    setSearchQuery(query);
-    onSearch(query); // Call the search callback
+    setLocalSearchQuery(query);
+    dispatch(setSearchQuery(query));
   };
 
   return (
@@ -56,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
         <h1 className="text-xl font-bold">{headerTitle}</h1>
         <input
           type="text"
-          value={searchQuery}
+          value={localSearchQuery}
           onChange={handleSearchChange}
           placeholder="Search tasks..."
           className="ml-4 p-2 border rounded-md text-black"

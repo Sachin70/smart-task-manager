@@ -9,7 +9,7 @@ export const FAB = () => {
   return (
     <button
       className="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg z-50"
-      onClick={() => router.push("/task/add")}
+      onClick={() => router.push("/new-task")}
     >
       <PlusIcon className="h-6 w-6" />
     </button>

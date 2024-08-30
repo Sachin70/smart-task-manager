@@ -1,6 +1,6 @@
 "use client";
 
-import { TaskForm } from "@/components/TaskForm";
+import TaskForm from "@/components/TaskForm";
 import { useParams, useRouter } from "next/navigation";
 
 export default function EditPage() {
